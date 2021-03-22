@@ -1,20 +1,40 @@
 import numpy as np
 from numpy.random import rand
+from sklearn.metrics import accuracy_score
+import pandas as pd
+
+def add_bias(X):
+    X = pd.DataFrame(X)
+    X = pd.concat([pd.Series(1, index=X.index, name='00'), X], axis=1)
+    X = np.array(X)
+    return X
+
 
 def xavier(in_, out_):
     return np.random.randn(in_, out_) * np.sqrt(2. / (in_ + out_))
 
 
-class LinearRegression:
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+
+def cost_function(X, y, weights):                 
+    z = np.dot(X, weights)        
+    predict_1 = y * np.log(sigmoid(z))
+    predict_0 = (1 - y) * np.log(1 - sigmoid(z))        
+    return -sum(predict_1 + predict_0) / len(X)
+
+
+class LogisticRegression:
     def __init__(self, X, y, random_init=False):
-        self.X = X
-        self.y = y
+        self.X = add_bias(X)
+        self.y = y.reshape(-1,1)
         self.M = X.shape[0]
         self.N = X.shape[1]
         if random_init == False:
             self.w = xavier(self.N, 1)
         else:
-            self.w = 
+            self.w = np.zeros((self.N, 1))
   
         
     
